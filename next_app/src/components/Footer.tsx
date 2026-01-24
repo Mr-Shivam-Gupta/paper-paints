@@ -3,7 +3,7 @@ import { Mail, Phone, MapPin, Facebook, Linkedin, Instagram } from 'lucide-react
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-deep-black text-white">
+    <footer className="w-full bg-deep-black text-white border-t-4 border-accent-red">
       <div className="max-w-[100rem] mx-auto px-8 md:px-16 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Company Info */}
@@ -14,12 +14,12 @@ export default function Footer() {
             <p className="font-paragraph text-base text-light-grey mb-6 leading-relaxed">
               Premium coating solutions for the construction industry. Trusted by professionals for over 25 years.
             </p>
-            <div className="flex gap-4">
+            <div className="flex gap-3">
               <a
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 bg-dark-grey hover:bg-accent-red rounded-lg flex items-center justify-center transition-colors"
+                className="w-11 h-11 bg-white/10 hover:bg-accent-red rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-105"
                 aria-label="Facebook"
               >
                 <Facebook className="h-5 w-5" />
@@ -28,7 +28,7 @@ export default function Footer() {
                 href="https://linkedin.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 bg-dark-grey hover:bg-accent-red rounded-lg flex items-center justify-center transition-colors"
+                className="w-11 h-11 bg-white/10 hover:bg-accent-red rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-105"
                 aria-label="LinkedIn"
               >
                 <Linkedin className="h-5 w-5" />
@@ -37,7 +37,7 @@ export default function Footer() {
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 bg-dark-grey hover:bg-accent-red rounded-lg flex items-center justify-center transition-colors"
+                className="w-11 h-11 bg-white/10 hover:bg-accent-red rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-105"
                 aria-label="Instagram"
               >
                 <Instagram className="h-5 w-5" />

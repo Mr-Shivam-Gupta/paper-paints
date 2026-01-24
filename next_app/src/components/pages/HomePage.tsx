@@ -416,7 +416,7 @@ const ProductCard = ({ product, index }: { product: any, index: number }) => {
       initial={{ opacity: 0, y: 50 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
-      className="group relative bg-white border border-dark-grey/5 hover:border-accent-red/20 transition-colors duration-500 h-full flex flex-col"
+      className="group relative bg-white border border-dark-grey/5 hover:border-accent-red/20 shadow-soft hover:shadow-soft-lg transition-all duration-500 h-full flex flex-col"
     >
       <div className="relative h-80 overflow-hidden">
         <Image

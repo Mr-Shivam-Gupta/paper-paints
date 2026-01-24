@@ -23,7 +23,7 @@ export default function Header() {
   const isActive = (path: string) => pathname === path;
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white border-b border-light-grey">
+    <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md border-b border-light-grey shadow-soft">
       <div className="max-w-[100rem] mx-auto px-8 md:px-16">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
@@ -72,7 +72,7 @@ export default function Header() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="lg:hidden p-2 text-deep-black hover:text-accent-red transition-colors"
+            className="lg:hidden p-2.5 rounded-lg text-deep-black hover:text-accent-red hover:bg-off-white transition-colors"
             aria-label="Toggle menu"
           >
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}

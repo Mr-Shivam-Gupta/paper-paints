@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, ReactNode } from "react";
 import Link from "next/link";
-import { LayoutDashboard, Package, Layers, Image, Users, LogOut, ExternalLink } from "lucide-react";
+import { LayoutDashboard, Package, Layers, Image, Users, Store, Mail, LogOut, ExternalLink } from "lucide-react";
 
 function AdminSidebar() {
   const path = usePathname();
@@ -13,6 +13,8 @@ function AdminSidebar() {
     { href: "/admin/applications", label: "Applications", icon: Layers },
     { href: "/admin/projects", label: "Projects", icon: Image },
     { href: "/admin/team", label: "Team", icon: Users },
+    { href: "/admin/dealer", label: "Dealer", icon: Store },
+    { href: "/admin/contact", label: "Contact", icon: Mail },
   ];
   return (
     <aside className="w-56 bg-deep-black text-white min-h-screen flex flex-col">

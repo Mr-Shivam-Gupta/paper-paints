@@ -1,79 +1,85 @@
 # Paper Paints – Next.js
 
-Full Next.js conversion of the Paper Paints (Wix) site, with backend and admin panel.
+Next.js frontend with Node.js (Express) + MongoDB backend and admin panel.
 
 ## Setup
 
-1. **Copy environment variables**
-   ```bash
-   cp .env.example .env
-   ```
-   Edit `.env` and set:
-   - `DATABASE_URL` – SQLite: `file:./dev.db` (or path to your DB file)
-   - `ADMIN_PASSWORD` – Admin panel password (min 8 characters)
+### 1. Backend (Node.js + MongoDB)
 
-2. **Create the database**
-   ```bash
-   npm run db:push
-   ```
-   This creates/updates the SQLite schema from `prisma/schema.prisma`.
+```bash
+cd ../backend
+cp .env.example .env
+```
 
-3. **Run the app**
-   ```bash
-   npm run dev
-   ```
-   Open [http://localhost:3000](http://localhost:3000).
+Edit `backend/.env`:
+- `MONGODB_URI` – e.g. `mongodb://localhost:27017/paper-paints` or MongoDB Atlas connection string
+- `SESSION_SECRET` – for JWT signing (optional; falls back to `ADMIN_PASSWORD`)
+- `ADMIN_EMAIL` + `ADMIN_PASSWORD` – used to **create the first admin** when no admins exist (bootstrap). Use these to log in initially.
+- `PORT` – optional, default 4000
+
+```bash
+npm install
+npm run dev
+```
+
+API runs at http://localhost:4000
+
+### 2. Frontend (Next.js)
+
+```bash
+cd next_app
+cp .env.example .env
+npm install
+npm run dev
+```
+
+Open http://localhost:3000. Next.js rewrites `/api/*` to the backend (API_URL or http://localhost:4000).
+
+### Run both
+
+From `next_app`:
+
+```bash
+npm run dev:all
+```
+
+This starts the backend and Next.js dev server together.
 
 ## Scripts
 
-- `npm run dev` – Development server
-- `npm run build` – Production build (runs `prisma generate` then `next build`)
+- `npm run dev` – Next.js dev server
+- `npm run build` – Production build
 - `npm run start` – Production server
-- `npm run db:generate` – Generate Prisma client
-- `npm run db:push` – Push schema to DB (create/update tables)
-- `npm run db:migrate` – Run migrations (alternative to `db:push`)
-- `npm run db:studio` – Open Prisma Studio for the database
+- `npm run dev:backend` – Start the Node.js API (from `../backend`)
+- `npm run dev:all` – Start backend + Next.js
 
 ## Admin panel
 
-- **URL:** [http://localhost:3000/admin](http://localhost:3000/admin)
-- **Login:** [http://localhost:3000/admin/login](http://localhost:3000/admin/login)  
-  Use the password set in `ADMIN_PASSWORD`.
+- **URL:** http://localhost:3000/admin
+- **Login:** http://localhost:3000/admin/login (email + password)  
+  The first admin is created from `ADMIN_EMAIL` and `ADMIN_PASSWORD` in `backend/.env` when the DB has no admins. Log in with those.
 
-In the admin panel you can manage:
+Manage: **Products**, **Applications**, **Projects**, **Team**.  
+Create/update/delete require an authenticated admin session (cookie).
 
-- **Products** – Catalog (name, category, description, features, specs, images, brochure)
-- **Applications** – Use cases and solutions
-- **Projects** – Project gallery
-- **Team** – Team members
+## API (Node.js backend)
 
-All create/update/delete API calls require an authenticated admin session (cookie).
-
-## API
-
-- `GET /api/products` – List products  
-- `GET /api/products/[id]` – Product by ID  
-- `POST /api/products` – Create (admin)  
-- `PUT /api/products/[id]` – Update (admin)  
-- `DELETE /api/products/[id]` – Delete (admin)  
-
-Similar routes exist for `/api/applications`, `/api/projects`, and `/api/team`.
-
-- `POST /api/auth/login` – `{ "password": "..." }` – Sets admin session cookie  
-- `POST /api/auth/logout` – Clears admin session  
-- `GET /api/auth/check` – Returns `{ ok: true }` if authenticated
+- `GET/POST /api/products`, `GET/PUT/DELETE /api/products/:id`
+- `GET/POST /api/applications`, `GET/PUT/DELETE /api/applications/:id`
+- `GET/POST /api/projects`, `GET/PUT/DELETE /api/projects/:id`
+- `GET/POST /api/team`, `GET/PUT/DELETE /api/team/:id`
+- `GET /api/auth/check`, `POST /api/auth/login`, `POST /api/auth/logout`
 
 ## Project structure
 
-- `src/app/` – App Router pages and API routes  
-- `src/app/admin/` – Admin UI (login, dashboard, CRUD for products, applications, projects, team)  
-- `src/components/` – Shared React components  
-- `src/entities/` – TypeScript types (Products, Applications, Projects, TeamMembers)  
-- `src/lib/` – `db` (Prisma), `api-client` (public fetch), `admin-api` (admin fetch), `auth-admin`, `prisma-map`  
-- `prisma/schema.prisma` – Database schema  
+- `src/app/` – App Router pages
+- `src/app/admin/` – Admin UI (login, dashboard, CRUD)
+- `src/components/` – Shared React components
+- `src/entities/` – TypeScript types
+- `src/lib/` – `api-client` (public fetch), `admin-api` (admin fetch with credentials)
+- `../backend/` – Node.js + Express + Mongoose API
 
 ## Deploy
 
-1. Set `DATABASE_URL` (e.g. PostgreSQL on your host) and `ADMIN_PASSWORD` in the deployment environment.
-2. Run migrations: `npx prisma migrate deploy` (or `db:push` for SQLite/prototyping).
-3. Build and start: `npm run build && npm run start`.
+1. **Backend:** Deploy the `backend/` app (e.g. Railway, Render, Fly.io). Set `MONGODB_URI`, `ADMIN_PASSWORD`, `PORT`.
+2. **Frontend:** Set `API_URL` to your backend URL. Build and deploy Next.js (e.g. Vercel).

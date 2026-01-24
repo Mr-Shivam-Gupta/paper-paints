@@ -4,13 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "db:generate": "prisma generate",
-    "db:push": "prisma db push",
-    "db:migrate": "prisma migrate dev",
-    "db:studio": "prisma studio"
+    "dev:backend": "npm run dev --prefix ../backend",
+    "dev:all": "concurrently -n api,web \"npm run dev:backend\" \"npm run dev\""
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
@@ -54,7 +52,6 @@
     "framer-motion": "^12.29.0",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.562.0",
-    "@prisma/client": "^6.9.0",
     "next": "16.1.4",
     "next-themes": "^0.4.6",
     "react": "19.2.3",
@@ -79,7 +76,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "prisma": "^6.9.0",
+    "concurrently": "^9.1.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.4",
     "tailwindcss": "^4",

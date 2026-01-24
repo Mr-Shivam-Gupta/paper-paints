@@ -6,15 +6,25 @@
   --foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Roboto', Arial, Helvetica, sans-serif;
+  font-family: var(--font-paragraph), "Roboto", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Focus for accessibility */
+:focus-visible {
+  outline: 2px solid #E53935;
+  outline-offset: 2px;
+}
+
+/* Selection */
+::selection {
+  background-color: rgba(229, 57, 53, 0.2);
 }

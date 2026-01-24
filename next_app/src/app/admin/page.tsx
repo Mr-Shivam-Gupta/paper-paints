@@ -1,11 +1,13 @@
 import Link from "next/link";
-import { Package, Layers, Image, Users, ArrowRight } from "lucide-react";
+import { Package, Layers, Image, Users, Store, Mail, ArrowRight } from "lucide-react";
 
 const cards = [
   { href: "/admin/products", label: "Products", icon: Package, desc: "Manage product catalog" },
   { href: "/admin/applications", label: "Applications", icon: Layers, desc: "Manage applications & solutions" },
   { href: "/admin/projects", label: "Projects", icon: Image, desc: "Manage project gallery" },
   { href: "/admin/team", label: "Team", icon: Users, desc: "Manage team members" },
+  { href: "/admin/dealer", label: "Dealer submissions", icon: Store, desc: "View dealer applications" },
+  { href: "/admin/contact", label: "Contact submissions", icon: Mail, desc: "View contact form messages" },
 ];
 
 export default function AdminDashboardPage() {

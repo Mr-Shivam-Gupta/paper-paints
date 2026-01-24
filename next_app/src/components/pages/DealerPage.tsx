@@ -25,26 +25,36 @@ export default function DealerPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    toast({
-      title: 'Application Submitted!',
-      description: 'Thank you for your interest. Our team will contact you within 24 hours.',
-    });
-
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      company: '',
-      location: '',
-      experience: '',
-      message: ''
-    });
-
-    setIsSubmitting(false);
+    try {
+      const res = await fetch('/api/dealer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error((data as { error?: string }).error || 'Submission failed');
+      toast({
+        title: 'Application Submitted!',
+        description: 'Thank you for your interest. Our team will contact you within 24 hours.',
+      });
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        company: '',
+        location: '',
+        experience: '',
+        message: ''
+      });
+    } catch (err) {
+      toast({
+        title: 'Submission Failed',
+        description: (err as Error)?.message || 'Please try again later.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
