@@ -1,6 +1,7 @@
 "use client";
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Phone } from 'lucide-react';
@@ -28,9 +29,18 @@ export default function Header() {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <h1 className="font-heading text-3xl md:text-4xl font-bold text-deep-black">
+            {/* <h1 className="font-heading text-3xl md:text-4xl font-bold text-deep-black">
               Paper<span className="text-accent-red">Paints</span>
-            </h1>
+            </h1> */}
+
+            <Image
+              src="/images/resources/logo.png"
+              alt="Paper Paints logo with the tagline Bond For Life"
+              width={180}
+              height={70}
+              className="h-23 w-auto object-contain"
+              priority
+            />
           </Link>
 
           {/* Desktop Navigation */}
@@ -55,10 +65,10 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* WhatsApp Button - Desktop */}
+          {/* WhatsApp Button - Desktop: 7828179343, pre-filled "Enquiry from website" */}
           <div className="hidden lg:block">
             <a
-              href="https://wa.me/919876543210"
+              href="https://wa.me/917828179343?text=Enquiry%20from%20website"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -105,7 +115,7 @@ export default function Header() {
                 </Link>
               ))}
               <a
-                href="https://wa.me/919876543210"
+                href="https://wa.me/917828179343?text=Enquiry%20from%20website"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block pt-4"

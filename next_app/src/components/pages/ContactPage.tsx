@@ -1,7 +1,7 @@
 "use client";
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Clock } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, Globe } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -102,7 +102,7 @@ export default function ContactPage() {
               </p>
 
               <div className="space-y-8">
-                {/* Office Address */}
+                {/* Office Address - Karsan Chambers */}
                 <div className="flex items-start gap-4">
                   <div className="w-14 h-14 bg-accent-red/10 rounded-lg flex items-center justify-center flex-shrink-0">
                     <MapPin className="h-6 w-6 text-accent-red" />
@@ -111,9 +111,27 @@ export default function ContactPage() {
                     <h3 className="font-heading text-xl font-bold text-deep-black mb-2">
                       Head Office
                     </h3>
+                    <p className="font-paragraph text-sm text-dark-grey mb-1">Paper Paints Pvt Ltd</p>
                     <p className="font-paragraph text-base text-dark-grey leading-relaxed">
-                      Industrial Area, Sector 45<br />
-                      New Delhi, India - 110001
+                      Karsan Chambers, 2nd Floor, 502<br />
+                      Devendra Nagar, Lal Chowk<br />
+                      Raipur, India - 492001
+                    </p>
+                  </div>
+                </div>
+
+                {/* Industrial Area - Paper Paints Private Limited */}
+                <div className="flex items-start gap-4">
+                  <div className="w-14 h-14 bg-accent-red/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <MapPin className="h-6 w-6 text-accent-red" />
+                  </div>
+                  <div>
+                    <h3 className="font-heading text-xl font-bold text-deep-black mb-2">
+                      Paper Paints Private Limited
+                    </h3>
+                    <p className="font-paragraph text-base text-dark-grey leading-relaxed">
+                      Industrial Area, 705/15, Ravabhattha<br />
+                      Raipur, Chhattisgarh
                     </p>
                   </div>
                 </div>
@@ -128,17 +146,17 @@ export default function ContactPage() {
                       Phone
                     </h3>
                     <a
-                      href="tel:+919876543210"
+                      href="tel:+918462980641"
                       className="font-paragraph text-base text-dark-grey hover:text-accent-red transition-colors"
                     >
-                      +91 98765 43210
+                      8462980641
                     </a>
-                    <br />
+                    <span className="font-paragraph text-dark-grey mx-1">/</span>
                     <a
-                      href="tel:+911123456789"
+                      href="tel:+917828179343"
                       className="font-paragraph text-base text-dark-grey hover:text-accent-red transition-colors"
                     >
-                      +91 11 2345 6789
+                      7828179343
                     </a>
                   </div>
                 </div>
@@ -153,17 +171,30 @@ export default function ContactPage() {
                       Email
                     </h3>
                     <a
-                      href="mailto:info@paperpaints.com"
+                      href="mailto:info.paperppaints@gmail.com"
                       className="font-paragraph text-base text-dark-grey hover:text-accent-red transition-colors"
                     >
-                      info@paperpaints.com
+                      info.paperppaints@gmail.com
                     </a>
-                    <br />
+                  </div>
+                </div>
+
+                {/* Website */}
+                <div className="flex items-start gap-4">
+                  <div className="w-14 h-14 bg-accent-red/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Globe className="h-6 w-6 text-accent-red" />
+                  </div>
+                  <div>
+                    <h3 className="font-heading text-xl font-bold text-deep-black mb-2">
+                      Website
+                    </h3>
                     <a
-                      href="mailto:sales@paperpaints.com"
+                      href="https://www.paperpaints.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="font-paragraph text-base text-dark-grey hover:text-accent-red transition-colors"
                     >
-                      sales@paperpaints.com
+                      paperpaints.com
                     </a>
                   </div>
                 </div>
@@ -186,10 +217,10 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              {/* WhatsApp Button */}
+              {/* WhatsApp Button - opens chat with 7828179343 and pre-filled "Enquiry from website" */}
               <div className="mt-12">
                 <a
-                  href="https://wa.me/919876543210"
+                  href="https://wa.me/917828179343?text=Enquiry%20from%20website"
                   target="_blank"
                   rel="noopener noreferrer"
                 >

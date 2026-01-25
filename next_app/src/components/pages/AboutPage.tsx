@@ -88,8 +88,8 @@ export default function AboutPage() {
               transition={{ duration: 0.6 }}
             >
               <Image
-                src="https://static.wixstatic.com/media/b4dcdb_6e4f075d79b84cf59cb5eeb6ff3c648e~mv2.png?originWidth=640&originHeight=448"
-                alt="Paper Paints manufacturing facility"
+                src="/images/paint/Our_Story.png"
+                alt="Paper Paints our story"
                 className="w-full h-auto rounded-lg shadow-lg"
                 width={700}
               />
@@ -174,8 +174,8 @@ export default function AboutPage() {
               className="order-2 lg:order-1"
             >
               <Image
-                src="https://static.wixstatic.com/media/b4dcdb_d0227e02b2544086a3523ddd62c74beb~mv2.png?originWidth=640&originHeight=448"
-                alt="Quality control laboratory"
+                src="/images/paint/Manufacturing_Excellence.png"
+                alt="Paper Paints manufacturing excellence"
                 className="w-full h-auto rounded-lg shadow-lg"
                 width={700}
               />

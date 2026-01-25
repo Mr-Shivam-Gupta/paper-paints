@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Mail, Phone, MapPin, Facebook, Linkedin, Instagram } from 'lucide-react';
+import { Mail, Phone, MapPin, Globe, Facebook, Linkedin, Instagram } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -11,6 +11,7 @@ export default function Footer() {
             <h3 className="font-heading text-3xl font-bold mb-6">
               Paper<span className="text-accent-red">Paints</span>
             </h3>
+            <p className="font-paragraph text-sm text-light-grey mb-4">Paper Paints Pvt Ltd</p>
             <p className="font-paragraph text-base text-light-grey mb-6 leading-relaxed">
               Premium coating solutions for the construction industry. Trusted by professionals for over 25 years.
             </p>
@@ -96,26 +97,41 @@ export default function Footer() {
               <li className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-accent-red flex-shrink-0 mt-1" />
                 <span className="font-paragraph text-base text-light-grey">
-                  Industrial Area, Sector 45<br />
-                  New Delhi, India - 110001
+                  <span className="font-medium text-white">Office:</span> Karsan Chambers, 2nd Floor, 502, Devendra Nagar, Lal Chowk, Raipur, India - 492001
+                </span>
+              </li>
+              <li className="flex items-start gap-3">
+                <MapPin className="h-5 w-5 text-accent-red flex-shrink-0 mt-1" />
+                <span className="font-paragraph text-base text-light-grey">
+                  <span className="font-medium text-white">Paper Paints Private Limited:</span> Industrial Area, 705/15, Ravabhattha, Raipur, Chhattisgarh
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-accent-red flex-shrink-0" />
-                <a
-                  href="tel:+919876543210"
-                  className="font-paragraph text-base text-light-grey hover:text-accent-red transition-colors"
-                >
-                  +91 98765 43210
-                </a>
+                <span className="font-paragraph text-base text-light-grey">
+                  <a href="tel:+918462980641" className="hover:text-accent-red transition-colors">8462980641</a>
+                  <span className="mx-1">/</span>
+                  <a href="tel:+917828179343" className="hover:text-accent-red transition-colors">7828179343</a>
+                </span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-accent-red flex-shrink-0" />
                 <a
-                  href="mailto:info@paperpaints.com"
+                  href="mailto:info.paperppaints@gmail.com"
                   className="font-paragraph text-base text-light-grey hover:text-accent-red transition-colors"
                 >
-                  info@paperpaints.com
+                  info.paperppaints@gmail.com
+                </a>
+              </li>
+              <li className="flex items-center gap-3">
+                <Globe className="h-5 w-5 text-accent-red flex-shrink-0" />
+                <a
+                  href="https://www.paperpaints.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-paragraph text-base text-light-grey hover:text-accent-red transition-colors"
+                >
+                  paperpaints.com
                 </a>
               </li>
             </ul>
@@ -126,7 +142,7 @@ export default function Footer() {
         <div className="pt-8 border-t border-dark-grey">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="font-paragraph text-sm text-light-grey text-center md:text-left">
-              © {new Date().getFullYear()} Paper Paints. All rights reserved.
+              © {new Date().getFullYear()} Paper Paints Pvt Ltd. All rights reserved.
             </p>
             <div className="flex gap-6">
               <Link

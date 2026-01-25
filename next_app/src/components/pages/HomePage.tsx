@@ -1,8 +1,8 @@
 // HPI 1.7-G
 "use client";
 import React, { useRef, useState, useEffect } from 'react';
-import { motion, useScroll, useTransform, useSpring, useInView, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Shield, Award, Users, Truck, ChevronRight, Check, ArrowUpRight } from 'lucide-react';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { ArrowRight, Shield, Award, Users, Truck, ChevronRight, Check, ArrowUpRight, ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import { Image } from '@/components/ui/image';
 import { Button } from '@/components/ui/button';
@@ -17,6 +17,41 @@ const TRUST_INDICATORS = [
   { icon: Award, title: 'ISO Certified', desc: 'Quality Standards' },
   { icon: Users, title: '5000+', desc: 'Satisfied Clients' },
   { icon: Truck, title: 'Pan India', desc: 'Distribution Network' }
+];
+
+const HERO_SLIDES = [
+  {
+    title: 'Premium',
+    titleAlt: 'Coating Solutions',
+    subtitle: 'Industrial-grade paints, cement, and coating solutions engineered for durability and excellence. Trusted by professionals across the construction industry.',
+    image: 'https://static.wixstatic.com/media/b4dcdb_01c91d57c459488fbae2e0a11e7f733a~mv2.png?originWidth=1920&originHeight=1024',
+    overlay: 'from-deep-black/70 via-deep-black/40 to-deep-black/85',
+    accent: 'Est. 1998'
+  },
+  {
+    title: 'Engineered for',
+    titleAlt: 'Excellence',
+    subtitle: 'Rigorous quality control and cutting-edge formulations. Every product meets the highest industry standards for coverage, durability, and finish.',
+    image: '/images/paint/slide2.jpg',
+    overlay: 'from-deep-black/75 via-deep-black/35 to-deep-black/90',
+    accent: 'Quality First'
+  },
+  {
+    title: 'Trusted by',
+    titleAlt: 'Professionals',
+    subtitle: '25+ years of expertise. Join thousands of contractors, architects, and dealers who rely on Paper Paints for their most demanding projects.',
+    image: '/images/paint/slide4.jpg',
+    overlay: 'from-deep-black/65 via-deep-black/25 to-deep-black/88',
+    accent: 'Since 1998'
+  },
+  {
+    title: 'Bond',
+    titleAlt: 'For Life.',
+    subtitle: 'Coatings that last. Superior adhesion, weather resistance, and finish retention for structures that stand the test of time.',
+    image: '/images/paint/slide5.jpg',
+    overlay: 'from-accent-red/50 via-deep-black/50 to-deep-black/90',
+    accent: 'Paper Paints'
+  }
 ];
 
 const PRODUCTS = [
@@ -105,117 +140,183 @@ const AnimatedText = ({ text, className = "" }: { text: string, className?: stri
 
 export default function HomePage() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
+  const [heroIndex, setHeroIndex] = useState(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const L = HERO_SLIDES.length;
 
-  const smoothScroll = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
+  useEffect(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(() => setHeroIndex((i) => (i + 1) % L), 5500);
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [L, heroIndex]);
+
+  const goToSlide = (next: number) => {
+    if (next === heroIndex) return;
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    setHeroIndex(next);
+  };
 
   return (
     <div ref={containerRef} className="bg-off-white min-h-screen selection:bg-accent-red selection:text-white overflow-x-clip font-paragraph">
       <Header />
 
-      {/* --- HERO SECTION --- */}
-      <section className="relative w-full h-[100vh] min-h-[800px] bg-deep-black overflow-hidden flex items-center justify-center">
-        {/* Parallax Background */}
-        <motion.div
-          className="absolute inset-0 z-0"
-          style={{ y: useTransform(scrollYProgress, [0, 0.2], [0, 200]) }}
+      {/* --- HERO SLIDER --- */}
+      <section className="relative w-full h-[100vh] min-h-[800px] bg-deep-black overflow-hidden flex items-center justify-center group/hero">
+        <AnimatePresence mode="wait">
+          {HERO_SLIDES.map((slide, idx) =>
+            idx === heroIndex ? (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, scale: 1.03 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+                className="absolute inset-0 z-0"
+              >
+                {/* Ken Burns background */}
+                <motion.div
+                  className="absolute inset-0"
+                  animate={{ scale: [1, 1.08] }}
+                  transition={{ duration: 8, ease: 'linear', repeat: Infinity, repeatType: 'reverse' }}
+                >
+                  <Image
+                    src={slide.image}
+                    alt=""
+                    className="w-full h-full object-cover"
+                    width={1920}
+                    height={1080}
+                  />
+                </motion.div>
+                <div className={`absolute inset-0 bg-gradient-to-b ${slide.overlay}`} />
+                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.15] mix-blend-overlay pointer-events-none" />
+              </motion.div>
+            ) : null
+          )}
+        </AnimatePresence>
+
+        {/* Content */}
+        <AnimatePresence mode="wait">
+          {HERO_SLIDES.map((slide, idx) =>
+            idx === heroIndex ? (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.4 }}
+                className="relative z-10 w-full max-w-[120rem] mx-auto px-6 md:px-12 lg:px-24 flex flex-col justify-center h-full"
+              >
+                <div className="max-w-5xl">
+                  <motion.div
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.15 }}
+                    className="flex items-center gap-4 mb-6"
+                  >
+                    <div className="h-px w-12 bg-accent-red" />
+                    <span className="text-accent-red font-medium tracking-widest uppercase text-sm">{slide.accent}</span>
+                  </motion.div>
+
+                  <h1 className="font-heading text-6xl md:text-8xl lg:text-9xl font-bold text-white leading-[0.9] tracking-tight mb-8">
+                    <span className="block overflow-hidden">
+                      <motion.span
+                        initial={{ y: '100%' }}
+                        animate={{ y: 0 }}
+                        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.25 }}
+                        className="block"
+                      >
+                        {slide.title}
+                      </motion.span>
+                    </span>
+                    <span className="block overflow-hidden text-light-grey/90">
+                      <motion.span
+                        initial={{ y: '100%' }}
+                        animate={{ y: 0 }}
+                        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
+                        className="block"
+                      >
+                        {slide.titleAlt}
+                      </motion.span>
+                    </span>
+                  </h1>
+
+                  <motion.p
+                    initial={{ opacity: 0, x: -16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.6, delay: 0.6 }}
+                    className="font-paragraph text-xl md:text-2xl text-light-grey/80 max-w-2xl mb-12 leading-relaxed border-l-2 border-accent-red pl-6"
+                  >
+                    {slide.subtitle}
+                  </motion.p>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.75 }}
+                    className="flex flex-col sm:flex-row gap-6"
+                  >
+                    <Link href="/products">
+                      <Button className="bg-accent-red text-white hover:bg-accent-red/90 h-16 px-10 text-lg rounded-none border border-accent-red transition-all duration-300 hover:scale-105">
+                        Explore Products
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                      </Button>
+                    </Link>
+                    <Link href="/dealer">
+                      <Button variant="outline" className="bg-transparent border border-white/30 text-white hover:bg-white hover:text-deep-black h-16 px-10 text-lg rounded-none backdrop-blur-sm transition-all duration-300">
+                        Become a Dealer
+                      </Button>
+                    </Link>
+                  </motion.div>
+                </div>
+              </motion.div>
+            ) : null
+          )}
+        </AnimatePresence>
+
+        {/* Arrows */}
+        <button
+          onClick={() => goToSlide((heroIndex - 1 + L) % L)}
+          className="absolute left-4 md:left-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-white/90 hover:text-white transition-all duration-300 opacity-70 md:opacity-0 md:group-hover/hero:opacity-100"
+          aria-label="Previous slide"
         >
-          <Image
-            src="https://static.wixstatic.com/media/b4dcdb_01c91d57c459488fbae2e0a11e7f733a~mv2.png?originWidth=1920&originHeight=1024"
-            alt="Industrial paint manufacturing facility"
-            className="w-full h-full object-cover opacity-50 scale-105"
-            width={1920}
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-deep-black/60 via-deep-black/20 to-deep-black/90" />
-          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
-        </motion.div>
+          <ChevronLeft className="w-6 h-6" />
+        </button>
+        <button
+          onClick={() => goToSlide((heroIndex + 1) % L)}
+          className="absolute right-4 md:right-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-white/90 hover:text-white transition-all duration-300 opacity-70 md:opacity-0 md:group-hover/hero:opacity-100"
+          aria-label="Next slide"
+        >
+          <ChevronRight className="w-6 h-6" />
+        </button>
 
-        <div className="relative z-10 w-full max-w-[120rem] mx-auto px-6 md:px-12 lg:px-24 flex flex-col justify-center h-full">
-          <div className="max-w-5xl">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="flex items-center gap-4 mb-6"
-            >
-              <div className="h-px w-12 bg-accent-red" />
-              <span className="text-accent-red font-medium tracking-widest uppercase text-sm">Est. 1998</span>
-            </motion.div>
-
-            <h1 className="font-heading text-6xl md:text-8xl lg:text-9xl font-bold text-white leading-[0.9] tracking-tight mb-8">
-              <span className="block overflow-hidden">
-                <motion.span
-                  initial={{ y: "100%" }}
-                  animate={{ y: 0 }}
-                  transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
-                  className="block"
-                >
-                  Premium
-                </motion.span>
-              </span>
-              <span className="block overflow-hidden text-light-grey/90">
-                <motion.span
-                  initial={{ y: "100%" }}
-                  animate={{ y: 0 }}
-                  transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.45 }}
-                  className="block"
-                >
-                  Coating Solutions
-                </motion.span>
-              </span>
-            </h1>
-
-            <motion.p
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-              className="font-paragraph text-xl md:text-2xl text-light-grey/80 max-w-2xl mb-12 leading-relaxed border-l-2 border-accent-red pl-6"
-            >
-              Industrial-grade paints, cement, and coating solutions engineered for durability and excellence. Trusted by professionals across the construction industry.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 1 }}
-              className="flex flex-col sm:flex-row gap-6"
-            >
-              <Link href="/products">
-                <Button className="bg-accent-red text-white hover:bg-accent-red/90 h-16 px-10 text-lg rounded-none border border-accent-red transition-all duration-300 hover:scale-105">
-                  Explore Products
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-              <Link href="/dealer">
-                <Button variant="outline" className="bg-transparent border border-white/30 text-white hover:bg-white hover:text-deep-black h-16 px-10 text-lg rounded-none backdrop-blur-sm transition-all duration-300">
-                  Become a Dealer
-                </Button>
-              </Link>
-            </motion.div>
+        {/* Dots + Progress bar */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-4">
+          <div className="flex items-center gap-2">
+            {HERO_SLIDES.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => goToSlide(i)}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  i === heroIndex ? 'w-8 bg-accent-red' : 'w-1.5 bg-white/40 hover:bg-white/60'
+                }`}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
           </div>
+          {/* Progress bar for current slide */}
+          <div className="w-32 h-0.5 bg-white/20 rounded-full overflow-hidden">
+            <motion.div
+              key={heroIndex}
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 5.5, ease: 'linear' }}
+              className="h-full w-full bg-accent-red origin-left"
+            />
+          </div>
+          <span className="text-[10px] uppercase tracking-widest text-white/50">Scroll</span>
         </div>
-
-        {/* Scroll Indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2, duration: 1 }}
-          className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/50"
-        >
-          <span className="text-xs uppercase tracking-widest">Scroll</span>
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="w-px h-12 bg-gradient-to-b from-white/50 to-transparent"
-          />
-        </motion.div>
       </section>
 
       {/* --- TRUST INDICATORS (Architectural Strip) --- */}
