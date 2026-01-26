@@ -521,7 +521,7 @@ const ProductCard = ({ product, index }: { product: any, index: number }) => {
     >
       <div className="relative h-80 overflow-hidden">
         <Image
-          src="https://static.wixstatic.com/media/b4dcdb_5152614a5d22441c8cce1eee4496ad80~mv2.png?originWidth=576&originHeight=448"
+          src="/images/paint/products.jpg"
           alt={product.title}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           width={600}
