@@ -36,6 +36,7 @@ export default function AdminApplicationsPage() {
   const [saving, setSaving] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [keyBenefitsList, setKeyBenefitsList] = useState<string[]>([""]);
 
   const load = () =>
     fetchAdminJson<{ items: Applications[] }>("/api/applications").then((r) => {
@@ -48,25 +49,40 @@ export default function AdminApplicationsPage() {
 
   const openNew = () => {
     setForm({});
+    setKeyBenefitsList([""]);
     setFormOpen(true);
   };
   const openEdit = (a: Applications) => {
     setForm({ ...a });
+    setKeyBenefitsList(
+      (a.keyBenefits || "")
+        .split("\n")
+        .map((s) => s.trim())
+        .filter(Boolean) || [""]
+    );
     setFormOpen(true);
   };
   const closeForm = () => {
     setFormOpen(false);
     setForm({});
+    setKeyBenefitsList([""]);
   };
 
   const save = async () => {
     setSaving(true);
     try {
+      const keyBenefits = keyBenefitsList
+        .map((b) => b.trim())
+        .filter(Boolean)
+        .join("\n");
+
       if (form._id) {
-        const { _id, _createdDate, _updatedDate, ...body } = form;
+        const { _id, _createdDate, _updatedDate, ...rest } = form;
+        const body = { ...rest, keyBenefits };
         await fetchAdmin(`/api/applications/${_id}`, { method: "PUT", body: JSON.stringify(body) });
       } else {
-        const { _id, _createdDate, _updatedDate, ...body } = form;
+        const { _id, _createdDate, _updatedDate, ...rest } = form;
+        const body = { ...rest, keyBenefits };
         await fetchAdmin("/api/applications", { method: "POST", body: JSON.stringify(body) });
       }
       await load();
@@ -76,6 +92,22 @@ export default function AdminApplicationsPage() {
     } finally {
       setSaving(false);
     }
+  };
+
+  const updateBenefitAt = (index: number, value: string) => {
+    setKeyBenefitsList((prev) => {
+      const next = [...prev];
+      next[index] = value;
+      return next;
+    });
+  };
+
+  const addBenefit = () => {
+    setKeyBenefitsList((prev) => [...prev, ""]);
+  };
+
+  const removeBenefitAt = (index: number) => {
+    setKeyBenefitsList((prev) => (prev.length <= 1 ? [""] : prev.filter((_, i) => i !== index)));
   };
 
   const doDelete = async () => {
@@ -96,16 +128,17 @@ export default function AdminApplicationsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="font-heading text-4xl font-bold text-deep-black">Applications</h1>
-        <Button onClick={openNew} className="bg-accent-red hover:bg-accent-red/90">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+        <h1 className="font-heading text-3xl md:text-4xl font-bold text-deep-black">Jobs &amp; Career</h1>
+        <Button onClick={openNew} className="bg-accent-red hover:bg-accent-red/90 w-full sm:w-auto">
           <Plus className="w-4 h-4 mr-2" />
-          New Application
+          New Job / Role
         </Button>
       </div>
 
       <div className="bg-white border border-dark-grey/10 rounded-lg overflow-hidden">
-        <table className="w-full">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[600px]">
           <thead className="bg-off-white border-b border-dark-grey/10">
             <tr>
               <th className="text-left p-4 font-medium text-deep-black">Title</th>
@@ -117,7 +150,7 @@ export default function AdminApplicationsPage() {
             {items.length === 0 ? (
               <tr>
                 <td colSpan={3} className="p-8 text-center text-dark-grey">
-                  No applications. Add one to get started.
+                  No jobs or roles. Add one to get started.
                 </td>
               </tr>
             ) : (
@@ -140,15 +173,16 @@ export default function AdminApplicationsPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       <Dialog open={formOpen} onOpenChange={(o) => !o && closeForm()}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{form._id ? "Edit Application" : "New Application"}</DialogTitle>
+            <DialogTitle>{form._id ? "Edit Job / Role" : "New Job / Role"}</DialogTitle>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+            <div className="md:col-span-1">
               <Label>Title</Label>
               <Input
                 value={form.title ?? ""}
@@ -156,7 +190,7 @@ export default function AdminApplicationsPage() {
                 placeholder="Title"
               />
             </div>
-            <div>
+            <div className="md:col-span-1">
               <Label>Category</Label>
               <Input
                 value={form.category ?? ""}
@@ -164,7 +198,15 @@ export default function AdminApplicationsPage() {
                 placeholder="e.g. Industrial"
               />
             </div>
-            <div>
+            <div className="md:col-span-1">
+              <Label>Salary Range</Label>
+              <Input
+                value={form.salaryRange ?? ""}
+                onChange={(e) => setForm((f) => ({ ...f, salaryRange: e.target.value }))}
+                placeholder="e.g. ₹25,000 - ₹35,000 / month"
+              />
+            </div>
+            <div className="md:col-span-2">
               <Label>Description</Label>
               <Textarea
                 value={form.description ?? ""}
@@ -173,38 +215,35 @@ export default function AdminApplicationsPage() {
                 rows={3}
               />
             </div>
-            <div>
+            <div className="md:col-span-2">
               <Label>Key Benefits</Label>
-              <Textarea
-                value={form.keyBenefits ?? ""}
-                onChange={(e) => setForm((f) => ({ ...f, keyBenefits: e.target.value }))}
-                placeholder="One per line"
-                rows={2}
-              />
-            </div>
-            <div>
-              <Label>Slug</Label>
-              <Input
-                value={form.slug ?? ""}
-                onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
-                placeholder="url-slug"
-              />
-            </div>
-            <div>
-              <Label>Main Image URL</Label>
-              <Input
-                value={form.mainImage ?? ""}
-                onChange={(e) => setForm((f) => ({ ...f, mainImage: e.target.value }))}
-                placeholder="https://..."
-              />
-            </div>
-            <div>
-              <Label>Learn More URL</Label>
-              <Input
-                value={form.learnMoreUrl ?? ""}
-                onChange={(e) => setForm((f) => ({ ...f, learnMoreUrl: e.target.value }))}
-                placeholder="https://..."
-              />
+              <div className="space-y-2">
+                {keyBenefitsList.map((benefit, idx) => (
+                  <div key={idx} className="flex gap-2">
+                    <Input
+                      value={benefit}
+                      onChange={(e) => updateBenefitAt(idx, e.target.value)}
+                      placeholder={`Benefit ${idx + 1}`}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => removeBenefitAt(idx)}
+                      className="shrink-0"
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={addBenefit}
+                  className="mt-1"
+                >
+                  Add Benefit
+                </Button>
+              </div>
             </div>
           </div>
           <DialogFooter>

@@ -87,37 +87,52 @@ export default function ProductsPage() {
       </section>
 
       {/* Filters Section */}
-      <section className="w-full bg-white py-12 border-b border-light-grey sticky top-20 z-40">
+      <section className="w-full bg-white py-16 border-b border-light-grey">
         <div className="max-w-[100rem] mx-auto px-8 md:px-16">
-          <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
-            {/* Search */}
-            <div className="relative w-full lg:w-96">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-dark-grey" />
-              <Input
-                type="text"
-                placeholder="Search products..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-12 h-12 font-paragraph"
-              />
+          <div className="max-w-4xl mx-auto bg-off-white border border-light-grey/60 rounded-2xl px-6 md:px-10 py-8 shadow-soft">
+            <div className="flex items-center gap-3 mb-6">
+              <Filter className="h-5 w-5 text-accent-red" />
+              <div>
+                <h2 className="font-heading text-2xl md:text-3xl font-bold text-deep-black">
+                  Find the right product
+                </h2>
+                <p className="font-paragraph text-sm md:text-base text-dark-grey/80">
+                  Search by name or description and quickly filter by product category.
+                </p>
+              </div>
             </div>
 
-            {/* Category Filter */}
-            <div className="flex items-center gap-3 flex-wrap">
-              <Filter className="h-5 w-5 text-dark-grey" />
-              {categories.map((category) => (
-                <Button
-                  key={category}
-                  onClick={() => setSelectedCategory(category || '')}
-                  variant={selectedCategory === category ? 'default' : 'outline'}
-                  className={`h-10 px-6 rounded-lg font-paragraph ${selectedCategory === category
-                    ? 'bg-accent-red text-white hover:bg-accent-red/90'
-                    : 'border-dark-grey text-dark-grey hover:bg-light-grey'
-                    }`}
-                >
-                  {category}
-                </Button>
-              ))}
+            <div className="flex flex-col lg:flex-row gap-6 items-stretch">
+              {/* Search */}
+              <div className="relative w-full lg:w-96">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-dark-grey" />
+                <Input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-12 h-12 font-paragraph bg-white"
+                />
+              </div>
+
+              {/* Category Filter */}
+              <div className="flex-1">
+                <div className="flex flex-wrap gap-3">
+                  {categories.map((category) => (
+                    <Button
+                      key={category}
+                      onClick={() => setSelectedCategory(category || '')}
+                      variant={selectedCategory === category ? 'default' : 'outline'}
+                      className={`h-10 px-5 rounded-full font-paragraph text-sm ${selectedCategory === category
+                        ? 'bg-accent-red text-white hover:bg-accent-red/90 border-accent-red'
+                        : 'border-dark-grey/40 text-dark-grey hover:bg-white'
+                        }`}
+                    >
+                      {category}
+                    </Button>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -9,6 +9,7 @@ const schema = new mongoose.Schema(
     features: String,
     mainImage: String,
     brochureUrl: String,
+    featured: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

@@ -8,6 +8,8 @@ import { Image } from '@/components/ui/image';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { getProducts } from "@/lib/api-client";
+import type { Products } from "@/entities";
 
 // --- CANONICAL DATA SOURCES ---
 // Preserving original data structures exactly as found in the source code.
@@ -54,44 +56,6 @@ const HERO_SLIDES = [
   }
 ];
 
-const PRODUCTS = [
-  {
-    title: 'Premium Emulsion Paints',
-    desc: 'High-quality interior and exterior paints with superior coverage',
-    category: 'Paints',
-    id: 'emulsion'
-  },
-  {
-    title: 'White Cement',
-    desc: 'Ultra-fine white cement for decorative and finishing applications',
-    category: 'Cement',
-    id: 'cement'
-  },
-  {
-    title: 'Wall Putty',
-    desc: 'Smooth finish wall putty for perfect surface preparation',
-    category: 'Putty',
-    id: 'putty'
-  },
-  {
-    title: 'Universal Primer',
-    desc: 'Multi-surface primer for enhanced paint adhesion',
-    category: 'Primers',
-    id: 'primer'
-  },
-  {
-    title: 'Construction Coatings',
-    desc: 'Industrial-grade protective coatings for structures',
-    category: 'Coatings',
-    id: 'coatings'
-  },
-  {
-    title: 'Specialty Solutions',
-    desc: 'Custom formulations for specific project requirements',
-    category: 'Solutions',
-    id: 'specialty'
-  }
-];
 
 const FEATURES = [
   {
@@ -143,6 +107,8 @@ export default function HomePage() {
   const [heroIndex, setHeroIndex] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const L = HERO_SLIDES.length;
+  const [featuredProducts, setFeaturedProducts] = useState<Products[]>([]);
+  const [productsLoading, setProductsLoading] = useState(true);
 
   useEffect(() => {
     if (intervalRef.current) clearInterval(intervalRef.current);
@@ -151,6 +117,20 @@ export default function HomePage() {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [L, heroIndex]);
+
+  useEffect(() => {
+    const loadFeaturedProducts = async () => {
+      try {
+        const result = await getProducts(true);
+        setFeaturedProducts(result.items);
+      } catch (error) {
+        console.error('Error loading featured products:', error);
+      } finally {
+        setProductsLoading(false);
+      }
+    };
+    loadFeaturedProducts();
+  }, []);
 
   const goToSlide = (next: number) => {
     if (next === heroIndex) return;
@@ -370,9 +350,19 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {PRODUCTS.map((product, index) => (
-              <ProductCard key={index} product={product} index={index} />
-            ))}
+            {productsLoading ? (
+              <div className="col-span-full text-center py-20">
+                <p className="font-paragraph text-dark-grey">Loading featured products...</p>
+              </div>
+            ) : featuredProducts.length > 0 ? (
+              featuredProducts.map((product, index) => (
+                <ProductCard key={product._id} product={product} index={index} />
+              ))
+            ) : (
+              <div className="col-span-full text-center py-20">
+                <p className="font-paragraph text-dark-grey">No featured products available.</p>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -430,31 +420,69 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* --- VISUAL BREATHER / PARALLAX BREAK --- */}
-      <section className="relative h-[80vh] overflow-hidden flex items-center justify-center">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="https://static.wixstatic.com/media/b4dcdb_e6ec6063d0384eb59a73dd91ee6f34b2~mv2.png?originWidth=1920&originHeight=832"
-            alt="Abstract texture"
-            className="w-full h-full object-cover grayscale contrast-125"
-            width={1920}
-          />
-          <div className="absolute inset-0 bg-accent-red/80 mix-blend-multiply" />
-        </div>
-        <div className="relative z-10 text-center px-6">
+      {/* --- COMMON USE CASES --- */}
+      <section className="w-full bg-white py-24">
+        <div className="max-w-[100rem] mx-auto px-8 md:px-16">
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
           >
-            <h2 className="font-heading text-6xl md:text-8xl font-bold text-white mb-6">
-              Built to Last.
+            <h2 className="font-heading text-5xl md:text-6xl font-bold text-deep-black mb-6">
+              Common Use Cases
             </h2>
-            <p className="font-paragraph text-xl text-white/90 max-w-2xl mx-auto">
-              Every drop engineered for maximum durability and coverage.
+            <p className="font-paragraph text-xl text-dark-grey max-w-3xl mx-auto">
+              How our products solve real-world challenges
             </p>
           </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                title: 'Interior Wall Finishing',
+                desc: 'Premium emulsion paints and wall putty for smooth, durable interior surfaces with excellent coverage and finish.',
+                image: 'https://static.wixstatic.com/media/b4dcdb_46856c6f2e32432f8947c6f532b54e54~mv2.png?originWidth=384&originHeight=256'
+              },
+              {
+                title: 'Exterior Protection',
+                desc: 'Weather-resistant coatings that protect building exteriors from harsh environmental conditions and UV damage.',
+                image: 'https://static.wixstatic.com/media/b4dcdb_3484005d508944619810f68bfa85eacf~mv2.png?originWidth=384&originHeight=256'
+              },
+              {
+                title: 'Decorative Applications',
+                desc: 'White cement and specialty finishes for creating aesthetic decorative elements and architectural details.',
+                image: 'https://static.wixstatic.com/media/b4dcdb_513284c7ffc94034b094f4818df6e361~mv2.png?originWidth=384&originHeight=256'
+              }
+            ].map((useCase, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="bg-off-white rounded-lg overflow-hidden"
+              >
+                <div className="aspect-[4/3] overflow-hidden">
+                  <Image
+                    src={useCase.image}
+                    alt={useCase.title}
+                    className="w-full h-full object-cover"
+                    width={400}
+                  />
+                </div>
+                <div className="p-6">
+                  <h3 className="font-heading text-2xl font-bold text-deep-black mb-3">
+                    {useCase.title}
+                  </h3>
+                  <p className="font-paragraph text-base text-dark-grey leading-relaxed">
+                    {useCase.desc}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -507,7 +535,7 @@ export default function HomePage() {
 
 // --- SUBCOMPONENTS ---
 
-const ProductCard = ({ product, index }: { product: any, index: number }) => {
+const ProductCard = ({ product, index }: { product: Products, index: number }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
 
@@ -521,26 +549,28 @@ const ProductCard = ({ product, index }: { product: any, index: number }) => {
     >
       <div className="relative h-80 overflow-hidden">
         <Image
-          src="/images/paint/products.jpg"
-          alt={product.title}
+          src={product.mainImage || '/images/paint/products.jpg'}
+          alt={product.productName || 'Product'}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           width={600}
         />
         <div className="absolute inset-0 bg-deep-black/0 group-hover:bg-deep-black/20 transition-colors duration-500" />
-        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 text-xs font-bold uppercase tracking-wider text-deep-black">
-          {product.category}
-        </div>
+        {product.category && (
+          <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 text-xs font-bold uppercase tracking-wider text-deep-black">
+            {product.category}
+          </div>
+        )}
       </div>
 
       <div className="p-8 flex flex-col flex-grow">
         <h3 className="font-heading text-3xl font-bold text-deep-black mb-3 group-hover:text-accent-red transition-colors duration-300">
-          {product.title}
+          {product.productName}
         </h3>
         <p className="font-paragraph text-dark-grey/70 mb-8 flex-grow leading-relaxed">
-          {product.desc}
+          {product.description}
         </p>
 
-        <Link href="/products" className="inline-flex items-center text-deep-black font-medium group/link mt-auto">
+        <Link href={`/products/${product._id}`} className="inline-flex items-center text-deep-black font-medium group/link mt-auto">
           <span className="relative overflow-hidden">
             <span className="block transition-transform duration-300 group-hover/link:-translate-y-full">Learn More</span>
             <span className="absolute top-0 left-0 block translate-y-full transition-transform duration-300 group-hover/link:translate-y-0 text-accent-red">Learn More</span>

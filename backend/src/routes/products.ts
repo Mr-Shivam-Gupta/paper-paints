@@ -5,9 +5,11 @@ import { requireAdmin } from "../middleware/auth.js";
 
 const router = Router();
 
-router.get("/", async (_req: Request, res: Response) => {
+router.get("/", async (req: Request, res: Response) => {
   try {
-    const items = await Product.find().sort({ createdAt: -1 }).lean();
+    const featured = req.query.featured === "true";
+    const query = featured ? { featured: true } : {};
+    const items = await Product.find(query).sort({ createdAt: -1 }).lean();
     res.json({ items: items.map((d) => toAPI(d as never)) });
   } catch (e) {
     console.error("GET /products", e);

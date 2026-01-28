@@ -76,12 +76,13 @@ export default function AdminDealerPage() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="font-heading text-4xl font-bold text-deep-black">Dealer Submissions</h1>
+      <div className="mb-8">
+        <h1 className="font-heading text-3xl md:text-4xl font-bold text-deep-black">Dealer Submissions</h1>
       </div>
 
       <div className="bg-white border border-dark-grey/10 rounded-lg overflow-hidden">
-        <table className="w-full">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[600px]">
           <thead className="bg-off-white border-b border-dark-grey/10">
             <tr>
               <th className="text-left p-4 font-medium text-deep-black">Date</th>
@@ -120,23 +121,24 @@ export default function AdminDealerPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       <Dialog open={!!viewItem} onOpenChange={(o) => !o && setViewItem(null)}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Dealer submission</DialogTitle>
           </DialogHeader>
           {viewItem && (
-            <div className="grid gap-3 text-sm">
-              <p><span className="font-medium text-dark-grey">Date:</span> {formatDate(viewItem._createdDate as string)}</p>
-              <p><span className="font-medium text-dark-grey">Name:</span> {viewItem.name || "—"}</p>
-              <p><span className="font-medium text-dark-grey">Email:</span> {viewItem.email || "—"}</p>
-              <p><span className="font-medium text-dark-grey">Phone:</span> {viewItem.phone || "—"}</p>
-              <p><span className="font-medium text-dark-grey">Company:</span> {viewItem.company || "—"}</p>
-              <p><span className="font-medium text-dark-grey">Location:</span> {viewItem.location || "—"}</p>
-              <p><span className="font-medium text-dark-grey">Experience:</span> {viewItem.experience || "—"}</p>
-              <p><span className="font-medium text-dark-grey">Message:</span> {viewItem.message || "—"}</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div><span className="font-medium text-dark-grey">Date:</span> {formatDate(viewItem._createdDate as string)}</div>
+              <div><span className="font-medium text-dark-grey">Name:</span> {viewItem.name || "—"}</div>
+              <div><span className="font-medium text-dark-grey">Email:</span> {viewItem.email || "—"}</div>
+              <div><span className="font-medium text-dark-grey">Phone:</span> {viewItem.phone || "—"}</div>
+              <div><span className="font-medium text-dark-grey">Company:</span> {viewItem.company || "—"}</div>
+              <div><span className="font-medium text-dark-grey">Location:</span> {viewItem.location || "—"}</div>
+              <div><span className="font-medium text-dark-grey">Experience:</span> {viewItem.experience || "—"}</div>
+              <div className="md:col-span-2"><span className="font-medium text-dark-grey">Message:</span> <p className="mt-1">{viewItem.message || "—"}</p></div>
             </div>
           )}
         </DialogContent>

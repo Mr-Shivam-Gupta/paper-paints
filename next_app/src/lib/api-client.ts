@@ -3,7 +3,7 @@
  * Replaces Wix BaseCrudService - calls our own /api routes.
  */
 
-import type { Products, Applications, Projects, TeamMembers } from "@/entities";
+import type { Products, Applications, TeamMembers } from "@/entities";
 
 const API = "/api";
 
@@ -14,8 +14,9 @@ async function handleResponse<T>(res: Response): Promise<T> {
   return res.json();
 }
 
-export async function getProducts(): Promise<{ items: Products[] }> {
-  const res = await fetch(`${API}/products`);
+export async function getProducts(featured?: boolean): Promise<{ items: Products[] }> {
+  const url = featured ? `${API}/products?featured=true` : `${API}/products`;
+  const res = await fetch(url);
   return handleResponse<{ items: Products[] }>(res);
 }
 
@@ -28,11 +29,6 @@ export async function getProductById(id: string): Promise<Products | null> {
 export async function getApplications(): Promise<{ items: Applications[] }> {
   const res = await fetch(`${API}/applications`);
   return handleResponse<{ items: Applications[] }>(res);
-}
-
-export async function getProjects(): Promise<{ items: Projects[] }> {
-  const res = await fetch(`${API}/projects`);
-  return handleResponse<{ items: Projects[] }>(res);
 }
 
 export async function getTeam(): Promise<{ items: TeamMembers[] }> {

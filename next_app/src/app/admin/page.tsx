@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { Package, Layers, Image, Users, Store, Mail, ArrowRight } from "lucide-react";
+import { Package, Layers, Users, Store, Mail, ArrowRight, Briefcase } from "lucide-react";
 
 const cards = [
   { href: "/admin/products", label: "Products", icon: Package, desc: "Manage product catalog" },
-  { href: "/admin/applications", label: "Applications", icon: Layers, desc: "Manage applications & solutions" },
-  { href: "/admin/projects", label: "Projects", icon: Image, desc: "Manage project gallery" },
+  { href: "/admin/applications", label: "Jobs & Career", icon: Layers, desc: "Manage jobs & career postings" },
+  { href: "/admin/career", label: "Career Applications", icon: Briefcase, desc: "View job applications" },
   { href: "/admin/team", label: "Team", icon: Users, desc: "Manage team members" },
   { href: "/admin/dealer", label: "Dealer submissions", icon: Store, desc: "View dealer applications" },
   { href: "/admin/contact", label: "Contact submissions", icon: Mail, desc: "View contact form messages" },
@@ -13,9 +13,9 @@ const cards = [
 export default function AdminDashboardPage() {
   return (
     <div>
-      <h1 className="font-heading text-4xl font-bold text-deep-black mb-2">Dashboard</h1>
-      <p className="text-dark-grey mb-10">Manage your site content</p>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <h1 className="font-heading text-3xl md:text-4xl font-bold text-deep-black mb-2">Dashboard</h1>
+      <p className="text-dark-grey mb-6 md:mb-10">Manage your site content</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         {cards.map(({ href, label, icon: Icon, desc }) => (
           <Link
             key={href}

@@ -22,6 +22,8 @@ export interface Applications {
   /** @wixFieldType text */
   keyBenefits?: string;
   /** @wixFieldType text */
+  salaryRange?: string;
+  /** @wixFieldType text */
   slug?: string;
   /** @wixFieldType url */
   learnMoreUrl?: string;
@@ -50,6 +52,8 @@ export interface Products {
   mainImage?: string;
   /** @wixFieldType url */
   brochureUrl?: string;
+  /** @wixFieldType boolean */
+  featured?: boolean;
 }
 
 

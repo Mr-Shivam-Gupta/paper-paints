@@ -36,6 +36,7 @@ export default function AdminTeamPage() {
   const [saving, setSaving] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
 
   const load = () =>
     fetchAdminJson<{ items: TeamMembers[] }>("/api/team").then((r) => {
@@ -92,20 +93,46 @@ export default function AdminTeamPage() {
     }
   };
 
+  const handleProfilePhotoUpload = async (file: File | null) => {
+    if (!file) return;
+    setImageUploading(true);
+    try {
+      const data = new FormData();
+      data.append("image", file);
+      const res = await fetch("/api/uploads/image", {
+        method: "POST",
+        body: data,
+      });
+      if (!res.ok) {
+        throw new Error("Failed to upload image");
+      }
+      const json = (await res.json()) as { url?: string };
+      if (json.url) {
+        setForm((f) => ({ ...f, profilePhoto: json.url }));
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Failed to upload image");
+    } finally {
+      setImageUploading(false);
+    }
+  };
+
   if (loading) return <p className="text-dark-grey">Loading...</p>;
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="font-heading text-4xl font-bold text-deep-black">Team</h1>
-        <Button onClick={openNew} className="bg-accent-red hover:bg-accent-red/90">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+        <h1 className="font-heading text-3xl md:text-4xl font-bold text-deep-black">Team</h1>
+        <Button onClick={openNew} className="bg-accent-red hover:bg-accent-red/90 w-full sm:w-auto">
           <Plus className="w-4 h-4 mr-2" />
           New Member
         </Button>
       </div>
 
       <div className="bg-white border border-dark-grey/10 rounded-lg overflow-hidden">
-        <table className="w-full">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[600px]">
           <thead className="bg-off-white border-b border-dark-grey/10">
             <tr>
               <th className="text-left p-4 font-medium text-deep-black">Name</th>
@@ -140,15 +167,16 @@ export default function AdminTeamPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       <Dialog open={formOpen} onOpenChange={(o) => !o && closeForm()}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{form._id ? "Edit Member" : "New Member"}</DialogTitle>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+            <div className="md:col-span-1">
               <Label>Name</Label>
               <Input
                 value={form.name ?? ""}
@@ -156,7 +184,7 @@ export default function AdminTeamPage() {
                 placeholder="Full name"
               />
             </div>
-            <div>
+            <div className="md:col-span-1">
               <Label>Job Title</Label>
               <Input
                 value={form.jobTitle ?? ""}
@@ -164,7 +192,7 @@ export default function AdminTeamPage() {
                 placeholder="e.g. CEO"
               />
             </div>
-            <div>
+            <div className="md:col-span-2">
               <Label>Bio</Label>
               <Textarea
                 value={form.bio ?? ""}
@@ -173,21 +201,21 @@ export default function AdminTeamPage() {
                 rows={3}
               />
             </div>
-            <div>
-              <Label>Profile Photo URL</Label>
+            <div className="md:col-span-2 space-y-2">
+              <Label>Profile Photo</Label>
               <Input
-                value={form.profilePhoto ?? ""}
-                onChange={(e) => setForm((f) => ({ ...f, profilePhoto: e.target.value }))}
-                placeholder="https://..."
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleProfilePhotoUpload(e.target.files?.[0] ?? null)}
               />
-            </div>
-            <div>
-              <Label>LinkedIn Profile URL</Label>
-              <Input
-                value={form.linkedInProfile ?? ""}
-                onChange={(e) => setForm((f) => ({ ...f, linkedInProfile: e.target.value }))}
-                placeholder="https://linkedin.com/in/..."
-              />
+              {imageUploading && (
+                <p className="text-xs text-dark-grey">Uploading image...</p>
+              )}
+              {form.profilePhoto && (
+                <p className="text-xs text-dark-grey break-all">
+                  Current image: {form.profilePhoto}
+                </p>
+              )}
             </div>
           </div>
           <DialogFooter>

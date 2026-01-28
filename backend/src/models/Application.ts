@@ -7,6 +7,7 @@ const schema = new mongoose.Schema(
     mainImage: String,
     category: String,
     keyBenefits: String,
+    salaryRange: String,
     slug: String,
     learnMoreUrl: String,
   },
