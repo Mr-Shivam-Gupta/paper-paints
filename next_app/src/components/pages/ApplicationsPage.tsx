@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, FormEvent } from 'react';
 import { motion } from 'framer-motion';
-import { Building2, Home, Factory, Paintbrush, Phone, X } from 'lucide-react';
+import { Building2, Home, Factory, Paintbrush, Phone, Briefcase, ChevronRight, ExternalLink } from 'lucide-react';
 import { Image } from '@/components/ui/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -237,70 +237,110 @@ export default function ApplicationsPage() {
               <motion.div
                 initial="initial"
                 animate="animate"
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                className="grid grid-cols-1 lg:grid-cols-2 gap-8"
               >
-                {applications.map((app, index) => (
-                  <motion.div
-                    key={app._id}
-                    variants={fadeInUp}
-                    transition={{ delay: index * 0.1 }}
-                    className="group bg-white rounded-xl overflow-hidden border border-dark-grey/10 hover:border-accent-red/30 hover:shadow-2xl transition-all duration-300 flex flex-col"
-                  >
-                    <div className="p-6 flex flex-col flex-grow">
-                      <div className="flex items-start justify-between gap-4 mb-4">
-                        <div className="flex-1">
+                {applications.map((app, index) => {
+                  const benefits = app.keyBenefits?.split('\n').filter(b => b.trim()) ?? [];
+                  return (
+                    <motion.div
+                      key={app._id}
+                      variants={fadeInUp}
+                      transition={{ delay: index * 0.1 }}
+                      className="group relative bg-white rounded-2xl overflow-hidden border-0 shadow-soft hover:shadow-soft-lg transition-all duration-300 flex flex-col"
+                    >
+                      {/* Accent top bar */}
+                      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-accent-red via-accent-red/80 to-accent-red/60" />
+
+                      {/* Optional hero image */}
+                      {app.mainImage && (
+                        <div className="relative h-44 overflow-hidden bg-off-white">
+                          <Image
+                            src={app.mainImage}
+                            alt={app.title ?? 'Job'}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            width={600}
+                            height={176}
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                           {app.category && (
-                            <span className="inline-block px-3 py-1 bg-accent-red/10 text-accent-red text-xs font-paragraph font-semibold rounded-full mb-3">
+                            <span className="absolute top-4 left-4 px-3 py-1.5 bg-white/95 backdrop-blur-sm text-accent-red text-xs font-paragraph font-semibold rounded-full shadow-sm">
                               {app.category}
                             </span>
                           )}
-                          <h3 className="font-heading text-2xl font-bold text-deep-black mb-2">
-                            {app.title}
-                          </h3>
-                          {app.salaryRange && (
-                            <p className="font-paragraph text-sm text-accent-red font-medium">
-                              {app.salaryRange}
+                        </div>
+                      )}
+
+                      <div className="p-6 md:p-8 flex flex-col flex-grow">
+                        {!app.mainImage && app.category && (
+                          <span className="inline-flex items-center gap-1.5 w-fit px-3 py-1.5 bg-accent-red/10 text-accent-red text-xs font-paragraph font-semibold rounded-full mb-4">
+                            <Briefcase className="w-3.5 h-3.5" />
+                            {app.category}
+                          </span>
+                        )}
+
+                        <h3 className="font-heading text-2xl md:text-3xl font-bold text-deep-black mb-3 leading-tight">
+                          {app.title}
+                        </h3>
+
+                        {app.salaryRange && (
+                          <p className="text-accent-red font-paragraph font-medium mb-4">
+                            {app.salaryRange}
+                          </p>
+                        )}
+
+                        {app.description && (
+                          <div className="mb-5">
+                            <h4 className="font-heading text-sm font-bold text-deep-black uppercase tracking-wide mb-2">
+                              About the role
+                            </h4>
+                            <p className="font-paragraph text-sm text-dark-grey leading-relaxed">
+                              {app.description}
                             </p>
+                          </div>
+                        )}
+
+                        {benefits.length > 0 && (
+                          <div className="mb-6">
+                            <h4 className="font-heading text-sm font-bold text-deep-black uppercase tracking-wide mb-3">
+                              Key benefits
+                            </h4>
+                            <ul className="space-y-2">
+                              {benefits.map((benefit, idx) => (
+                                <li key={idx} className="flex items-start gap-3">
+                                  <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-accent-red shrink-0" />
+                                  <span className="font-paragraph text-sm text-dark-grey">
+                                    {benefit}
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        <div className="mt-auto flex flex-col sm:flex-row gap-3 pt-2">
+                          <Button
+                            onClick={() => openApplyModal(app)}
+                            className="flex-1 bg-accent-red text-white hover:bg-accent-red/90 h-12 rounded-xl font-medium font-paragraph shadow-sm hover:shadow-md transition-shadow inline-flex items-center justify-center gap-2"
+                          >
+                            Apply Now
+                            <ChevronRight className="w-4 h-4" />
+                          </Button>
+                          {app.learnMoreUrl && (
+                            <a
+                              href={app.learnMoreUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center justify-center gap-2 h-12 px-5 rounded-xl border-2 border-dark-grey/20 text-deep-black font-paragraph font-medium hover:border-accent-red/50 hover:text-accent-red transition-colors"
+                            >
+                              <ExternalLink className="w-4 h-4" />
+                              Learn more
+                            </a>
                           )}
                         </div>
                       </div>
-                      
-                      <p className="font-paragraph text-sm text-dark-grey mb-4 leading-relaxed line-clamp-3 flex-grow">
-                        {app.description}
-                      </p>
-                      
-                      {app.keyBenefits && (
-                        <div className="mb-4">
-                          <h4 className="font-heading text-sm font-bold text-deep-black mb-2">
-                            Key Benefits:
-                          </h4>
-                          <div className="space-y-1.5">
-                            {app.keyBenefits.split('\n').filter(b => b.trim()).slice(0, 3).map((benefit, idx) => (
-                              <div key={idx} className="flex items-start gap-2">
-                                <div className="w-1 h-1 bg-accent-red rounded-full mt-2 shrink-0"></div>
-                                <p className="font-paragraph text-xs text-dark-grey line-clamp-1">
-                                  {benefit}
-                                </p>
-                              </div>
-                            ))}
-                            {app.keyBenefits.split('\n').filter(b => b.trim()).length > 3 && (
-                              <p className="font-paragraph text-xs text-dark-grey/70 italic">
-                                +{app.keyBenefits.split('\n').filter(b => b.trim()).length - 3} more benefits
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      )}
-                      
-                      <Button
-                        onClick={() => openApplyModal(app)}
-                        className="w-full bg-accent-red text-white hover:bg-accent-red/90 h-11 rounded-lg font-medium mt-auto"
-                      >
-                        Apply Now
-                      </Button>
-                    </div>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                  );
+                })}
               </motion.div>
             ) : (
               <div className="text-center py-20">
